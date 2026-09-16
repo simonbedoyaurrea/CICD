@@ -1,0 +1,47 @@
+# Nombre del workflow que se muestra en GitHub Actions
+name: CI
+
+# Define cuándo se ejecuta el workflow
+on:
+  # Se ejecuta cuando hay un push (subida de cambios)
+  push:
+    # Pero solo en la rama principal 'main'
+    branches: [main]
+  # También se ejecuta cuando se crea un Pull Request
+  pull_request:
+    # Solo para PRs dirigidos a la rama 'main'
+    branches: [main]
+
+# Grupo de trabajos (tareas) que se ejecutan
+jobs:
+  # Nombre del trabajo: 'build'
+  build:
+    # Sistema operativo donde corre: Ubuntu (el más usado en CI)
+    runs-on: ubuntu-latest
+
+    # Lista de pasos que se ejecutan en orden
+    steps:
+      # Paso 1: Descarga el código del repositorio
+      - uses: actions/checkout@v4
+
+      # Paso 2: Instala Node.js en el sistema
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          # Versión de Node.js a instalar
+          node-version: '20'
+
+      # Paso 3: Instala las dependencias del proyecto (express)
+      - name: Install dependencies
+        run: npm install
+
+      # Paso 4: Inicia el servidor y verifica que funcione
+      - name: Run server
+        run: |
+          # Inicia el servidor en segundo plano (&)
+          node server.js &
+          # Espera 2 segundos para que el servidor arranque
+          sleep 2
+          # Hace una petición GET para verificar que responde
+          # -f falla si el código de respuesta no es 2xx
+          curl -f http://localhost:3000/
