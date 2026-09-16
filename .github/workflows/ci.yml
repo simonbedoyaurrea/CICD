@@ -35,7 +35,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Paso 4: Inicia el servidor y verifica que funcione
+      # Paso 4: Ejecuta la suite de tests (npm test -> node --test)
+      - name: Run tests
+        run: npm test
+
+      # Paso 5: Inicia el servidor y verifica que funcione
       - name: Run server
         run: |
           # Inicia el servidor en segundo plano (&)
